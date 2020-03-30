@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Code7248.word_reader">
-      <HintPath>..\External\Code7248.word_reader.dll</HintPath>
+      <HintPath>..\libs\Code7248.word_reader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -63,7 +63,7 @@
       <DependentUpon>media.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Modules\Controls\ToolNumericBox.cs" />
+    <Compile Include="Controls\ToolNumericBox.cs" />
     <Compile Include="Modules\TextHandle.cs" />
     <Compile Include="Modules\TextReader\WordReader.cs" />
     <Compile Include="Modules\Utils.cs" />
@@ -81,7 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules" />
-    <Folder Include="Modules\Controls" />
+    <Folder Include="Controls" />
     <Folder Include="Modules\TextReader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

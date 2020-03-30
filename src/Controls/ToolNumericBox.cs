@@ -7,7 +7,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Writer.Modules.Controls
+namespace Writer.Controls
 {
 	/// <summary>
 	/// Description of ToolNumericBox.

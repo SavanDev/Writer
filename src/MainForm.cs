@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Writer.Controls;
 using Writer.Modules;
 
 namespace Writer
@@ -17,7 +18,7 @@ namespace Writer
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		private string formTitle = "Mobius Writer";
+		private string formTitle = "SD Writer";
 		OpenFileDialog openDialog = new OpenFileDialog ()
 		{
 			Title = "Seleccione un archivo...",
