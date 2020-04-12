@@ -8,7 +8,7 @@ using System;
 using System.Windows.Forms;
 using Code7248.word_reader;
 
-namespace Writer.Modules.TextReader
+namespace Writer.Handles.TextReader
 {
 	/// <summary>
 	/// Description of WordReader.

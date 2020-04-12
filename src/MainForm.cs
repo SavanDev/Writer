@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Writer.Controls;
-using Writer.Modules;
+using Writer.Handles;
 
 namespace Writer
 {
@@ -125,7 +125,11 @@ namespace Writer
 		
 		void AcerdaDeToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			
+			string message = String.Format("{0}\n{1} - {2}",
+			                               "SD " + Application.ProductName,
+			                               "MIT License",
+			                               Application.CompanyName + " 2020");
+			MessageBox.Show(message, "Acerca de");
 		}
 		
 		void ToolBoldClick(object sender, EventArgs e)

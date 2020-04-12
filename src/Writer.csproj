@@ -55,7 +55,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainForm.cs" />
+    <Compile Include="Handles\Clipboard.cs" />
+    <Compile Include="Handles\TextHandle.cs" />
+    <Compile Include="Handles\Utils.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -63,10 +68,10 @@
       <DependentUpon>media.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Controls\ToolNumericBox.cs" />
-    <Compile Include="Modules\TextHandle.cs" />
-    <Compile Include="Modules\TextReader\WordReader.cs" />
-    <Compile Include="Modules\Utils.cs" />
+    <Compile Include="Controls\ToolNumericBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Handles\TextReader\WordReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,10 +84,6 @@
       <LastGenOutput>media.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules" />
-    <Folder Include="Controls" />
-    <Folder Include="Modules\TextReader" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

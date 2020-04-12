@@ -8,7 +8,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Writer.Modules
+namespace Writer.Handles
 {
 	/// <summary>
 	/// Description of Utils.

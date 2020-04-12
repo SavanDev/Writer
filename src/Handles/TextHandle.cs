@@ -7,9 +7,9 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Writer.Modules.TextReader;
+using Writer.Handles.TextReader;
 
-namespace Writer.Modules
+namespace Writer.Handles
 {
 	/// <summary>
 	/// Clase principal para el control de texto.
