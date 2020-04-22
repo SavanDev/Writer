@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using Writer.Controls;
 using Writer.Handles;
@@ -34,14 +35,19 @@ namespace Writer
 			SolidColorOnly = true
 		};
 		private ToolNumericBox toolFontSize = new ToolNumericBox();
-		
+		Version versionInfo = Assembly.GetExecutingAssembly().GetName().Version;
+
 		public MainForm()
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			
+
+#if DEBUG
+			formTitle = String.Format("SD Writer [Build: {0}]", versionInfo.Build);
+#endif
+
 			this.Text = String.Format("{0} - {1}", "Sín título", formTitle);
 			
 			tStripLblCount.Text = "Línea: 1 Columna: 1";
@@ -69,6 +75,9 @@ namespace Writer
 		{
 			if (openDialog.ShowDialog() == DialogResult.OK) {
 				TextHandle tHandle = new TextHandle(openDialog.FileName);
+#if DEBUG
+				MessageBox.Show(openDialog.FileName);
+#endif
 				tHandle.LoadToRichTextBox(rTextBox);
 			}
 		}
@@ -125,11 +134,8 @@ namespace Writer
 		
 		void AcerdaDeToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			string message = String.Format("{0}\n{1} - {2}",
-			                               "SD " + Application.ProductName,
-			                               "MIT License",
-			                               Application.CompanyName + " 2020");
-			MessageBox.Show(message, "Acerca de");
+			AboutBox about = new AboutBox();
+			about.ShowDialog();
 		}
 		
 		void ToolBoldClick(object sender, EventArgs e)
