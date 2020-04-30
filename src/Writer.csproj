@@ -8,7 +8,8 @@
     <RootNamespace>Writer</RootNamespace>
     <AssemblyName>Writer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <NoWin32Manifest>False</NoWin32Manifest>
     <SignAssembly>False</SignAssembly>
@@ -61,7 +62,7 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handles\Clipboard.cs" />
+    <Compile Include="Handles\TextClipboard.cs" />
     <Compile Include="Handles\TextHandle.cs" />
     <Compile Include="Handles\Utils.cs" />
     <Compile Include="MainForm.cs">
@@ -73,6 +74,7 @@
     <Compile Include="media.Designer.cs">
       <DependentUpon>media.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Controls\ToolNumericBox.cs">
       <SubType>Component</SubType>
@@ -93,6 +95,12 @@
       <LastGenOutput>media.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Writer.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

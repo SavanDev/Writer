@@ -46,9 +46,9 @@ namespace Writer
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ediciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cortarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copiarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pegarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cortarEdicion = new System.Windows.Forms.ToolStripMenuItem();
+            this.copiarEdicion = new System.Windows.Forms.ToolStripMenuItem();
+            this.pegarEdicion = new System.Windows.Forms.ToolStripMenuItem();
             this.verToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.barraDeHerramientasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.barraDeEstadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,9 +73,9 @@ namespace Writer
             this.tStripLblCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.rTextBox = new System.Windows.Forms.RichTextBox();
             this.conRichText = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cortarToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.copiarToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.pegarToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cortarRTF = new System.Windows.Forms.ToolStripMenuItem();
+            this.copiarRTF = new System.Windows.Forms.ToolStripMenuItem();
+            this.pegarRTF = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolFont = new System.Windows.Forms.ToolStrip();
             this.toolFonts = new System.Windows.Forms.ToolStripComboBox();
@@ -165,33 +165,33 @@ namespace Writer
             // ediciónToolStripMenuItem
             // 
             this.ediciónToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cortarToolStripMenuItem,
-            this.copiarToolStripMenuItem,
-            this.pegarToolStripMenuItem});
+            this.cortarEdicion,
+            this.copiarEdicion,
+            this.pegarEdicion});
             this.ediciónToolStripMenuItem.Name = "ediciónToolStripMenuItem";
             this.ediciónToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.ediciónToolStripMenuItem.Text = "Edición";
             // 
-            // cortarToolStripMenuItem
+            // cortarEdicion
             // 
-            this.cortarToolStripMenuItem.Image = global::Writer.media.cut;
-            this.cortarToolStripMenuItem.Name = "cortarToolStripMenuItem";
-            this.cortarToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.cortarToolStripMenuItem.Text = "Cortar";
+            this.cortarEdicion.Image = global::Writer.media.cut;
+            this.cortarEdicion.Name = "cortarEdicion";
+            this.cortarEdicion.Size = new System.Drawing.Size(180, 22);
+            this.cortarEdicion.Text = "Cortar";
             // 
-            // copiarToolStripMenuItem
+            // copiarEdicion
             // 
-            this.copiarToolStripMenuItem.Image = global::Writer.media.document_copies;
-            this.copiarToolStripMenuItem.Name = "copiarToolStripMenuItem";
-            this.copiarToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.copiarToolStripMenuItem.Text = "Copiar";
+            this.copiarEdicion.Image = global::Writer.media.document_copies;
+            this.copiarEdicion.Name = "copiarEdicion";
+            this.copiarEdicion.Size = new System.Drawing.Size(180, 22);
+            this.copiarEdicion.Text = "Copiar";
             // 
-            // pegarToolStripMenuItem
+            // pegarEdicion
             // 
-            this.pegarToolStripMenuItem.Image = global::Writer.media.clipboard_invoice;
-            this.pegarToolStripMenuItem.Name = "pegarToolStripMenuItem";
-            this.pegarToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.pegarToolStripMenuItem.Text = "Pegar";
+            this.pegarEdicion.Image = global::Writer.media.clipboard_invoice;
+            this.pegarEdicion.Name = "pegarEdicion";
+            this.pegarEdicion.Size = new System.Drawing.Size(180, 22);
+            this.pegarEdicion.Text = "Pegar";
             // 
             // verToolStripMenuItem
             // 
@@ -421,32 +421,32 @@ namespace Writer
             // conRichText
             // 
             this.conRichText.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cortarToolStripMenuItem1,
-            this.copiarToolStripMenuItem1,
-            this.pegarToolStripMenuItem1});
+            this.cortarRTF,
+            this.copiarRTF,
+            this.pegarRTF});
             this.conRichText.Name = "conRichText";
             this.conRichText.Size = new System.Drawing.Size(110, 70);
             // 
-            // cortarToolStripMenuItem1
+            // cortarRTF
             // 
-            this.cortarToolStripMenuItem1.Image = global::Writer.media.cut;
-            this.cortarToolStripMenuItem1.Name = "cortarToolStripMenuItem1";
-            this.cortarToolStripMenuItem1.Size = new System.Drawing.Size(109, 22);
-            this.cortarToolStripMenuItem1.Text = "Cortar";
+            this.cortarRTF.Image = global::Writer.media.cut;
+            this.cortarRTF.Name = "cortarRTF";
+            this.cortarRTF.Size = new System.Drawing.Size(109, 22);
+            this.cortarRTF.Text = "Cortar";
             // 
-            // copiarToolStripMenuItem1
+            // copiarRTF
             // 
-            this.copiarToolStripMenuItem1.Image = global::Writer.media.document_copies;
-            this.copiarToolStripMenuItem1.Name = "copiarToolStripMenuItem1";
-            this.copiarToolStripMenuItem1.Size = new System.Drawing.Size(109, 22);
-            this.copiarToolStripMenuItem1.Text = "Copiar";
+            this.copiarRTF.Image = global::Writer.media.document_copies;
+            this.copiarRTF.Name = "copiarRTF";
+            this.copiarRTF.Size = new System.Drawing.Size(109, 22);
+            this.copiarRTF.Text = "Copiar";
             // 
-            // pegarToolStripMenuItem1
+            // pegarRTF
             // 
-            this.pegarToolStripMenuItem1.Image = global::Writer.media.clipboard_invoice;
-            this.pegarToolStripMenuItem1.Name = "pegarToolStripMenuItem1";
-            this.pegarToolStripMenuItem1.Size = new System.Drawing.Size(109, 22);
-            this.pegarToolStripMenuItem1.Text = "Pegar";
+            this.pegarRTF.Image = global::Writer.media.clipboard_invoice;
+            this.pegarRTF.Name = "pegarRTF";
+            this.pegarRTF.Size = new System.Drawing.Size(109, 22);
+            this.pegarRTF.Text = "Pegar";
             // 
             // toolStripContainer1
             // 
@@ -500,6 +500,7 @@ namespace Writer
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Writer";
@@ -526,9 +527,9 @@ namespace Writer
 		private System.Windows.Forms.ToolStripButton toolColor;
 		private System.Windows.Forms.ToolStripButton toolBullet;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem pegarToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem copiarToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem cortarToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem pegarRTF;
+		private System.Windows.Forms.ToolStripMenuItem copiarRTF;
+		private System.Windows.Forms.ToolStripMenuItem cortarRTF;
 		private System.Windows.Forms.ContextMenuStrip conRichText;
 		private System.Windows.Forms.ToolStripButton toolJusFill;
 		private System.Windows.Forms.ToolStripButton toolJusRight;
@@ -540,9 +541,9 @@ namespace Writer
 		private System.Windows.Forms.ToolStrip toolFont;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
 		private System.Windows.Forms.ToolStripComboBox toolFonts;
-		private System.Windows.Forms.ToolStripMenuItem pegarToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copiarToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem cortarToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pegarEdicion;
+		private System.Windows.Forms.ToolStripMenuItem copiarEdicion;
+		private System.Windows.Forms.ToolStripMenuItem cortarEdicion;
 		private System.Windows.Forms.ToolStripStatusLabel tStripLblCount;
 		private System.Windows.Forms.ToolStripButton toolUnderline;
 		private System.Windows.Forms.ToolStripButton toolCursive;

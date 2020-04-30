@@ -64,6 +64,14 @@ namespace Writer
 			toolFonts.Text = rTextBox.Font.Name;
 			
 			toolFontSize.ValueChanged += ToolFontsSelectedIndexChanged;
+
+			// Clipboard System
+			cortarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Cut(rTextBox);
+			cortarRTF.Click += (object sender, EventArgs e) => TextClipboard.Cut(rTextBox);
+			copiarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Copy(rTextBox);
+			copiarRTF.Click += (object sender, EventArgs e) => TextClipboard.Copy(rTextBox);
+			pegarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Paste(rTextBox);
+			pegarRTF.Click += (object sender, EventArgs e) => TextClipboard.Paste(rTextBox);
 		}
 		
 		void SalirToolStripMenuItemClick(object sender, EventArgs e)
