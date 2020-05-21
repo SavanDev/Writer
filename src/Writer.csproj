@@ -37,9 +37,6 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Code7248.word_reader">
-      <HintPath>..\libs\Code7248.word_reader.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -56,21 +53,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
+    <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox.Designer.cs">
+    <Compile Include="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handles\TextClipboard.cs" />
-    <Compile Include="Handles\TextHandle.cs" />
-    <Compile Include="Handles\Utils.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\TextClipboard.cs" />
+    <Compile Include="Modules\TextHandle.cs" />
+    <Compile Include="Modules\Utils.cs" />
     <Compile Include="media.Designer.cs">
       <DependentUpon>media.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -79,15 +76,14 @@
     <Compile Include="Controls\ToolNumericBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Handles\TextReader\WordReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AboutBox.resx">
+    <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="media.resx">
@@ -101,6 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Writer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Forms" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

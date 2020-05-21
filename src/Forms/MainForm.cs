@@ -1,16 +1,32 @@
 ﻿/*
- * Created by SharpDevelop.
- * User: Dylan
- * Date: 08/03/2020
- * Time: 03:35 p.m.
+ * MIT License
+ * 
+ * Copyright (c) 2020 SavanDev
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
+using System.IO;
 using System.Windows.Forms;
 using Writer.Controls;
-using Writer.Handles;
+using Writer.Modules;
 
 namespace Writer
 {
@@ -19,23 +35,10 @@ namespace Writer
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		private string formTitle = "SD Writer";
-		OpenFileDialog openDialog = new OpenFileDialog ()
-		{
-			Title = "Seleccione un archivo...",
-			Filter = TextHandle.SupportedFormats(TextHandle.IOType.Load)
-		};
-		SaveFileDialog saveDialog = new SaveFileDialog()
-		{
-			Title = "Seleccione una ruta de guardado...",
-			Filter = TextHandle.SupportedFormats(TextHandle.IOType.Save)
-		};
-		ColorDialog colorDialog = new ColorDialog ()
-		{
+		ColorDialog colorDialog = new ColorDialog() {
 			SolidColorOnly = true
 		};
-		private ToolNumericBox toolFontSize = new ToolNumericBox();
-		Version versionInfo = Assembly.GetExecutingAssembly().GetName().Version;
+		ToolNumericBox toolFontSize = new ToolNumericBox();
 
 		public MainForm()
 		{
@@ -43,17 +46,10 @@ namespace Writer
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-
-#if DEBUG
-			formTitle = String.Format("SD Writer [Build: {0}]", versionInfo.Build);
-#endif
-
-			this.Text = String.Format("{0} - {1}", "Sín título", formTitle);
 			
-			tStripLblCount.Text = "Línea: 1 Columna: 1";
+			TextHandle.InitializeComponent(rTextBox);
 
-			foreach (FontFamily font in System.Drawing.FontFamily.Families)
-			{
+			foreach (FontFamily font in FontFamily.Families) {
 				toolFonts.Items.Add(font.Name);
 			}
 			
@@ -65,13 +61,23 @@ namespace Writer
 			
 			toolFontSize.ValueChanged += ToolFontsSelectedIndexChanged;
 
-			// Clipboard System
-			cortarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Cut(rTextBox);
-			cortarRTF.Click += (object sender, EventArgs e) => TextClipboard.Cut(rTextBox);
-			copiarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Copy(rTextBox);
-			copiarRTF.Click += (object sender, EventArgs e) => TextClipboard.Copy(rTextBox);
-			pegarEdicion.Click += (object sender, EventArgs e) => TextClipboard.Paste(rTextBox);
-			pegarRTF.Click += (object sender, EventArgs e) => TextClipboard.Paste(rTextBox);
+			// Clipboard system
+			cortarEdicion.Click += (sender, e) => TextClipboard.Cut(rTextBox);
+			cortarRTF.Click += (sender, e) => TextClipboard.Cut(rTextBox);
+			copiarEdicion.Click += (sender, e) => TextClipboard.Copy(rTextBox);
+			copiarRTF.Click += (sender, e) => TextClipboard.Copy(rTextBox);
+			pegarEdicion.Click += (sender, e) => TextClipboard.Paste(rTextBox);
+			pegarRTF.Click += (sender, e) => TextClipboard.Paste(rTextBox);
+			
+			#if DEBUG
+			Console.WriteLine("DEBUG: Zoom Factor -> " + rTextBox.ZoomFactor);
+			#endif
+			
+			// Zoom system
+			zoom50.Click += (sender, e) => Utils.ToogleZoomFactor(0.5F, "50%", rTextBox, zoomTool);
+			zoom100.Click += (sender, e) => Utils.ToogleZoomFactor(1F, "100%", rTextBox, zoomTool);
+			zoom200.Click += (sender, e) => Utils.ToogleZoomFactor(2F, "200%", rTextBox, zoomTool);
+			zoom400.Click += (sender, e) => Utils.ToogleZoomFactor(4F, "400%", rTextBox, zoomTool);
 		}
 		
 		void SalirToolStripMenuItemClick(object sender, EventArgs e)
@@ -81,30 +87,19 @@ namespace Writer
 		
 		void AbrirToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if (openDialog.ShowDialog() == DialogResult.OK) {
-				TextHandle tHandle = new TextHandle(openDialog.FileName);
-#if DEBUG
-				MessageBox.Show(openDialog.FileName);
-#endif
-				tHandle.LoadToRichTextBox(rTextBox);
-			}
+			if (TextHandle.LoadFile())
+				TextHandle.LoadToRichTextBox();
 		}
 		
 		void GuardarToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if (saveDialog.ShowDialog() == DialogResult.OK) {
-				TextHandle tHandle = new TextHandle();
-				tHandle.SetTextFromRichTextBox(rTextBox);
-				if (tHandle.SaveTextToFile(saveDialog.FileName)) {
-					MessageBox.Show("Guardado correctamente");
-				}
-			}
+			if (TextHandle.SaveTextToFile())
+				MessageBox.Show("Guardado correctamente");
 		}
 		
 		void NuevoToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			// TODO: Agregar un controlador para cuando haya cambios sin guardar.
-			Utils.VerifyChanges();
+			TextHandle.VerifyChanges(true);
 			rTextBox.Clear();
 		}
 		
@@ -112,13 +107,13 @@ namespace Writer
 		{
 			// Obtener la línea.
 			int index = rTextBox.SelectionStart;
-			int line = (rTextBox.GetLineFromCharIndex(index)) + 1;
+			int line = (rTextBox.GetLineFromCharIndex(index));
 			
 			// Obtener la columna.
 			int firstChar = rTextBox.GetFirstCharIndexFromLine(line);
-			int column = (index - firstChar) + 1;
+			int column = (index - firstChar);
 			
-			tStripLblCount.Text = String.Format("Línea: {0} Columna: {1}", line, column);
+			tStripLblCount.Text = String.Format("Línea: {0} Columna: {1}", ++line, ++column);
 			
 			// Detectar estilos
 			DetectStyle(rTextBox.SelectionFont);
@@ -126,10 +121,7 @@ namespace Writer
 		
 		void BarraDeHerramientasToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if (barraDeHerramientasToolStripMenuItem.Checked)
-				toolStyles.Visible = barraDeHerramientasToolStripMenuItem.Checked = false;
-			else
-				toolStyles.Visible = barraDeHerramientasToolStripMenuItem.Checked = true;
+			toolStripContainer1.TopToolStripPanelVisible = barraDeHerramientasToolStripMenuItem.Checked ? barraDeHerramientasToolStripMenuItem.Checked = false : barraDeHerramientasToolStripMenuItem.Checked = true;
 		}
 		
 		void BarraDeEstadoToolStripMenuItemClick(object sender, EventArgs e)
@@ -142,7 +134,7 @@ namespace Writer
 		
 		void AcerdaDeToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			AboutBox about = new AboutBox();
+			var about = new AboutBox();
 			about.ShowDialog();
 		}
 		
@@ -165,11 +157,7 @@ namespace Writer
 		{
 			FontStyle style;
 			
-			if (rTextBox.SelectionFont != null)
-				style = rTextBox.SelectionFont.Style;
-			else
-				style = rTextBox.Font.Style;
-			
+			style = rTextBox.SelectionFont != null ? rTextBox.SelectionFont.Style : rTextBox.Font.Style;
 			rTextBox.SelectionFont = new Font(toolFonts.Text, (float)toolFontSize.Value, style);
 		}
 		
@@ -195,13 +183,12 @@ namespace Writer
 		
 		void ToolJusFillClick(object sender, EventArgs e)
 		{
-			
+			// TODO: Justify Text
 		}
 		
 		void ToolColorClick(object sender, EventArgs e)
 		{
-			if(colorDialog.ShowDialog() == DialogResult.OK)
-			{
+			if (colorDialog.ShowDialog() == DialogResult.OK) {
 				rTextBox.SelectionColor = colorDialog.Color;
 			}
 		}
@@ -213,16 +200,14 @@ namespace Writer
 		
 		void ToolBackColorClick(object sender, EventArgs e)
 		{
-			if (colorDialog.ShowDialog() == DialogResult.OK)
-			{
+			if (colorDialog.ShowDialog() == DialogResult.OK) {
 				rTextBox.SelectionBackColor = colorDialog.Color;
 			}
 		}
 		
 		void MainFormFormClosing(object sender, FormClosingEventArgs e)
 		{
-			// TODO: Agregar un controlador para cuando haya cambios sin guardar.
-			Utils.VerifyChanges();
+			TextHandle.VerifyChanges(true);
 		}
 		
 		void DetectStyle(Font actualStyle)
@@ -235,6 +220,16 @@ namespace Writer
 				toolUnderline.Checked = actualStyle.Underline ? true : false;
 				toolTachado.Checked = actualStyle.Strikeout ? true : false;
 			}
+		}
+		
+		void RTextBoxTextChanged(object sender, EventArgs e)
+		{
+			TextHandle.VerifyChanges();
+		}
+		void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			if (TextHandle.SaveTextToFile(true))
+				MessageBox.Show("Guardado correctamente");
 		}
 	}
 }

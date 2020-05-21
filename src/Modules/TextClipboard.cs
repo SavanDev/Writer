@@ -22,29 +22,29 @@
  * SOFTWARE.
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
-namespace Writer
+namespace Writer.Modules
 {
-	/// <summary>
-	/// Class with program entry point.
-	/// </summary>
-	internal sealed class Program
-	{
-		/// <summary>
-		/// Program entry point.
-		/// </summary>
-		[STAThread]
-		private static void Main(string[] args)
-		{
-			#if DEBUG
-			Console.WriteLine("Starting SD Writer...");
-			#endif
-			
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(true);
-			Application.Run(new MainForm());
-		}
-		
-	}
+    public static class TextClipboard
+    {
+        public static void Cut(RichTextBox rtf)
+        {
+            Clipboard.SetText(rtf.SelectedRtf);
+            rtf.SelectedRtf = "";
+        }
+
+        public static void Copy(RichTextBox rtf)
+        {
+            Clipboard.SetText(rtf.SelectedRtf);
+        }
+
+        public static void Paste(RichTextBox rtf)
+        {
+            rtf.SelectedRtf = Clipboard.GetText();
+        }
+    }
 }

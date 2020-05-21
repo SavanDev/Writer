@@ -22,29 +22,32 @@
  * SOFTWARE.
  */
 using System;
+using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
-namespace Writer
+namespace Writer.Modules
 {
 	/// <summary>
-	/// Class with program entry point.
+	/// Description of Utils.
 	/// </summary>
-	internal sealed class Program
+	public static class Utils
 	{
-		/// <summary>
-		/// Program entry point.
-		/// </summary>
-		[STAThread]
-		private static void Main(string[] args)
+		public static void ToogleFontStyle(FontStyle fStyle, RichTextBox rTextBox, ToolStripButton button)
 		{
-			#if DEBUG
-			Console.WriteLine("Starting SD Writer...");
-			#endif
-			
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(true);
-			Application.Run(new MainForm());
+			rTextBox.SelectionFont = new Font(rTextBox.SelectionFont, rTextBox.SelectionFont.Style ^ fStyle);
+			button.Checked = !button.Checked;
 		}
 		
+		public static int GetBuildVersion()
+		{
+			return Assembly.GetExecutingAssembly().GetName().Version.Build;
+		}
+		
+		public static void ToogleZoomFactor(float zoom, string text, RichTextBox rTextBox, ToolStripDropDownButton button)
+		{
+			rTextBox.ZoomFactor = zoom;
+			button.Text = text;
+		}
 	}
 }

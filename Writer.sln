@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-# SharpDevelop 5.2
+# SharpDevelop 5.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Writer", "src\Writer.csproj", "{7C9BF72F-79AF-4EA8-91C4-AF0CAED927BD}"
 EndProject
 Global

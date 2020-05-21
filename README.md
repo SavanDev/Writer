@@ -1,4 +1,4 @@
-# Writer
+# SD Writer
 Light Microsoft Word alternative.
 
-# Create in SharpDevelop with C#
+Coming soon... more info.
