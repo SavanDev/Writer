@@ -68,7 +68,6 @@ namespace Writer
 			this.verToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.barraDeHerramientasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.barraDeEstadoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.opcionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStyles = new System.Windows.Forms.ToolStrip();
@@ -119,7 +118,6 @@ namespace Writer
 			this.archivoToolStripMenuItem,
 			this.ediciónToolStripMenuItem,
 			this.verToolStripMenuItem,
-			this.opcionesToolStripMenuItem,
 			this.ayudaToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -225,7 +223,7 @@ namespace Writer
 			this.barraDeHerramientasToolStripMenuItem,
 			this.barraDeEstadoToolStripMenuItem});
 			this.verToolStripMenuItem.Name = "verToolStripMenuItem";
-			this.verToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+			this.verToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
 			this.verToolStripMenuItem.Text = "Ver";
 			// 
 			// barraDeHerramientasToolStripMenuItem
@@ -245,12 +243,6 @@ namespace Writer
 			this.barraDeEstadoToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.barraDeEstadoToolStripMenuItem.Text = "Barra de estado";
 			this.barraDeEstadoToolStripMenuItem.Click += new System.EventHandler(this.BarraDeEstadoToolStripMenuItemClick);
-			// 
-			// opcionesToolStripMenuItem
-			// 
-			this.opcionesToolStripMenuItem.Name = "opcionesToolStripMenuItem";
-			this.opcionesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-			this.opcionesToolStripMenuItem.Text = "Opciones";
 			// 
 			// ayudaToolStripMenuItem
 			// 
@@ -577,6 +569,7 @@ namespace Writer
 			this.Controls.Add(this.menuStrip1);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Icon = global::Writer.media.Logo_1;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "MainForm";
 			this.Text = "SD Writer";
@@ -635,7 +628,6 @@ namespace Writer
 		private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nuevoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem opcionesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem verToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ediciónToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem archivoToolStripMenuItem;

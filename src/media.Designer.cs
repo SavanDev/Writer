@@ -161,6 +161,16 @@ namespace Writer {
 		}
 		
 		/// <summary>
+		///   Busca un recurso adaptado de tipo System.Drawing.Icon similar a (Icono).
+		/// </summary>
+		internal static System.Drawing.Icon Logo_1 {
+			get {
+				object obj = ResourceManager.GetObject("Logo_1", resourceCulture);
+				return ((System.Drawing.Icon)(obj));
+			}
+		}
+		
+		/// <summary>
 		///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
 		/// </summary>
 		internal static System.Drawing.Bitmap save_as {

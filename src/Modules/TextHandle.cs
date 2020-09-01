@@ -40,6 +40,7 @@ namespace Writer.Modules
 		static string fileUrl;
 		
 		static RichTextBox rTextBox;
+		static bool hasChanges;
 		
 		enum IO
 		{
@@ -86,11 +87,6 @@ namespace Writer.Modules
 				
 				mimeType = Path.GetExtension(fName);
 				
-				#if DEBUG
-				Console.WriteLine(string.Format("DEBUG: Trying to load -> {0}", openDialog.FileName));
-				Console.WriteLine(string.Format("DEBUG: File Extension -> {0}", mimeType));
-				#endif
-				
 				try {
 					fileName = Path.GetFileNameWithoutExtension(fName);
 					fileText = File.ReadAllText(fName);
@@ -119,7 +115,7 @@ namespace Writer.Modules
 		
 		public static bool SaveTextToFile(bool forceDialog = false)
 		{
-			if (fileText != null) {
+			if (hasChanges) {
 				if ((fileUrl == null || forceDialog) && saveDialog.ShowDialog() == DialogResult.OK)
 					fileUrl = fileName;
 				
@@ -151,34 +147,34 @@ namespace Writer.Modules
 		/// <returns></returns>
 		static string SupportedFormats(IO state, bool allExcept = false)
 		{
-			if (state == IO.Load) {
-				string allTypes = string.Join(";", mimeTypes.Values);
-				string mime = string.Format("Todos los tipos de archivos soportados ({0})|{0}", allTypes);
-				
-				foreach (var element in mimeTypes) {
-					mime += string.Format("|{0} ({1})|{1}", element.Key, element.Value);
-				}
-				
-				if (allExcept)
-					mime += "|Todos los archivos (*.*)|*.*";
-				
-				#if DEBUG
-				Console.WriteLine(string.Format("DEBUG: Available formats -> [{0}]", mime));
-				#endif
-				
-				return mime;
+			switch (state)
+			{
+				case IO.Load:
+					string allTypes = string.Join(";", mimeTypes.Values);
+					string mime = string.Format("Todos los tipos de archivos soportados ({0})|{0}", allTypes);
+					
+					foreach (var element in mimeTypes) {
+						mime += string.Format("|{0} ({1})|{1}", element.Key, element.Value);
+					}
+					
+					if (allExcept)
+						mime += "|Todos los archivos (*.*)|*.*";
+					
+					return mime;
+				default:
+					return "Archivos de texto enriquecido (*.rtf)|*.rtf|Archivos de texto (*.txt)|*.txt";
 			}
-			
-			return "Archivos de texto enriquecido (*.rtf)|*.rtf|Archivos de texto (*.txt)|*.txt";
 		}
 		
 		public static void VerifyChanges(bool dialogDetect = false)
 		{
+			hasChanges = fileText != rTextBox.Text && rTextBox.Text != "";
+			
 			var frm = Form.ActiveForm;
 			if (frm != null)
-				frm.Text = string.Format("{0}{1} - {2} [Build: {3}]", fileText != rTextBox.Text ? "*" : null, fileName, Application.ProductName, Utils.GetBuildVersion());
+				frm.Text = string.Format("{0}{1} - {2} [Build: {3}]", hasChanges ? "*" : null, fileName, Application.ProductName, Utils.GetBuildVersion());
 			
-			if ((dialogDetect && fileText != rTextBox.Text) && MessageBox.Show("¿Desea guardar los cambios?", "Hay cambios sin guardar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+			if ((dialogDetect && hasChanges) && MessageBox.Show("¿Desea guardar los cambios?", "Hay cambios sin guardar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
 				SaveTextToFile();
 		}
 	}

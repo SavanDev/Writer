@@ -37,14 +37,9 @@ namespace Writer
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			#if DEBUG
-			Console.WriteLine("Starting SD Writer...");
-			#endif
-			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(true);
 			Application.Run(new MainForm());
 		}
-		
 	}
 }

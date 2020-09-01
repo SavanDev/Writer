@@ -69,10 +69,6 @@ namespace Writer
 			pegarEdicion.Click += (sender, e) => TextClipboard.Paste(rTextBox);
 			pegarRTF.Click += (sender, e) => TextClipboard.Paste(rTextBox);
 			
-			#if DEBUG
-			Console.WriteLine("DEBUG: Zoom Factor -> " + rTextBox.ZoomFactor);
-			#endif
-			
 			// Zoom system
 			zoom50.Click += (sender, e) => Utils.ToogleZoomFactor(0.5F, "50%", rTextBox, zoomTool);
 			zoom100.Click += (sender, e) => Utils.ToogleZoomFactor(1F, "100%", rTextBox, zoomTool);
@@ -93,8 +89,7 @@ namespace Writer
 		
 		void GuardarToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if (TextHandle.SaveTextToFile())
-				MessageBox.Show("Guardado correctamente");
+			TextHandle.SaveTextToFile();
 		}
 		
 		void NuevoToolStripMenuItemClick(object sender, EventArgs e)
@@ -228,8 +223,7 @@ namespace Writer
 		}
 		void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if (TextHandle.SaveTextToFile(true))
-				MessageBox.Show("Guardado correctamente");
+			TextHandle.SaveTextToFile(true);
 		}
 	}
 }
