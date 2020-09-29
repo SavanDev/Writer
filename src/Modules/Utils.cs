@@ -25,29 +25,95 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using Writer.Controls;
 
 namespace Writer.Modules
 {
-	/// <summary>
-	/// Description of Utils.
-	/// </summary>
-	public static class Utils
-	{
-		public static void ToogleFontStyle(FontStyle fStyle, RichTextBox rTextBox, ToolStripButton button)
-		{
-			rTextBox.SelectionFont = new Font(rTextBox.SelectionFont, rTextBox.SelectionFont.Style ^ fStyle);
-			button.Checked = !button.Checked;
-		}
-		
-		public static int GetBuildVersion()
-		{
-			return Assembly.GetExecutingAssembly().GetName().Version.Build;
-		}
-		
-		public static void ToogleZoomFactor(float zoom, string text, RichTextBox rTextBox, ToolStripDropDownButton button)
-		{
-			rTextBox.ZoomFactor = zoom;
-			button.Text = text;
-		}
-	}
+    /// <summary>
+    /// Description of Utils.
+    /// </summary>
+    public static class Utils
+    {
+        public static int GetBuildVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version.Build;
+        }
+        public static void ToggleFont(FontStyle fStyle, IText textBox, ToolStripButton button)
+        {
+            textBox.FontText = new Font(textBox.FontText, textBox.FontText.Style ^ fStyle);
+            button.Checked = !button.Checked;
+        }
+
+        public static void ToggleFont(string fontFamily, float fontSize, IText textBox)
+        {
+            textBox.FontText = new Font(fontFamily, fontSize, textBox.FontText.Style);
+        }
+
+        public static string GetLines(IText textBox)
+        {
+            int line = 0, column = 0;
+
+            if (textBox is RTFTextBox)
+            {
+                // Obtener la línea.
+                int index = ((RTFTextBox)textBox).SelectionStart;
+                line = (((RTFTextBox)textBox).GetLineFromCharIndex(index));
+
+                // Obtener la columna.
+                int firstChar = ((RTFTextBox)textBox).GetFirstCharIndexFromLine(line);
+                column = (index - firstChar);
+            }
+
+            if (textBox is CodeTextBox)
+            {
+                // Obtener la línea.
+                line = ((CodeTextBox)textBox).ActiveTextAreaControl.Caret.Line;
+
+                // Obtener la columna.
+                column = ((CodeTextBox)textBox).ActiveTextAreaControl.Caret.Column;
+            }
+
+            return $"Línea: {++line} Columna: {++column}";
+        }
+    }
+
+    public static class RTFTools
+    {
+        public static void ToogleBullet(TabPage tabPage)
+        {
+            var rTextBox = tabPage.Controls[0];
+            if (rTextBox is RTFTextBox)
+                ((RTFTextBox)rTextBox).SelectionBullet = !((RTFTextBox)rTextBox).SelectionBullet;
+        }
+        public static void ToggleFontColor(Color color, TabPage tabPage)
+        {
+            var rTextBox = tabPage.Controls[0];
+            if (rTextBox is RTFTextBox)
+                ((RTFTextBox)rTextBox).SelectionColor = color;
+        }
+
+        public static void ToggleBackColor(Color color, TabPage tabPage)
+        {
+            var rTextBox = tabPage.Controls[0];
+            if (rTextBox is RTFTextBox)
+                ((RTFTextBox)rTextBox).SelectionBackColor = color;
+        }
+
+        public static void ToggleAligment(HorizontalAlignment alignment, TabPage tabPage)
+        {
+            var rTextBox = tabPage.Controls[0];
+            if (rTextBox is RTFTextBox)
+                ((RTFTextBox)rTextBox).SelectionAlignment = alignment;
+        }
+
+        public static void ToggleZoomFactor(float zoom, TabPage tabPage, ToolStripDropDownButton button)
+        {
+            var rTextBox = tabPage.Controls[0];
+            if (rTextBox is RTFTextBox)
+            {
+                ((RTFTextBox)rTextBox).ZoomFactor = zoom;
+                button.Text = $"{zoom * 100}%";
+            }
+        }
+    }
 }

@@ -21,9 +21,9 @@ namespace Writer.Controls
 			host = new ToolStripControlHost(this);
 		}
 		
-		public void AddToToolStrip(ToolStrip tStrip)
+		public void AddToToolStrip(ToolStrip tStrip, int index)
 		{
-			tStrip.Items.Add(host);
+			tStrip.Items.Insert(index, host);
 		}
 	}
 }

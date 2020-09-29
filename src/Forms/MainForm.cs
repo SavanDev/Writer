@@ -21,209 +21,295 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using ICSharpCode.TextEditor;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Writer.Controls;
+using Writer.Forms;
 using Writer.Modules;
 
 namespace Writer
 {
-	/// <summary>
-	/// Description of MainForm.
-	/// </summary>
-	public partial class MainForm : Form
-	{
-		ColorDialog colorDialog = new ColorDialog() {
-			SolidColorOnly = true
-		};
-		ToolNumericBox toolFontSize = new ToolNumericBox();
+    /// <summary>
+    /// Description of MainForm.
+    /// </summary>
+    public partial class MainForm : Form
+    {
+        IText actualEditor = null;
 
-		public MainForm()
-		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
-			InitializeComponent();
-			
-			TextHandle.InitializeComponent(rTextBox);
+        ColorDialog colorDialog = new ColorDialog()
+        {
+            SolidColorOnly = true
+        };
+        ToolNumericBox toolFontSize = new ToolNumericBox();
 
-			foreach (FontFamily font in FontFamily.Families) {
-				toolFonts.Items.Add(font.Name);
-			}
-			
-			toolFontSize.AddToToolStrip(toolFont);
-			
-			// Mostrar datos iniciales
-			toolFontSize.Value = (decimal)rTextBox.Font.Size;
-			toolFonts.Text = rTextBox.Font.Name;
-			
-			toolFontSize.ValueChanged += ToolFontsSelectedIndexChanged;
+        public MainForm()
+        {
+            //
+            // The InitializeComponent() call is required for Windows Forms designer support.
+            //
+            InitializeComponent();
 
-			// Clipboard system
-			cortarEdicion.Click += (sender, e) => TextClipboard.Cut(rTextBox);
-			cortarRTF.Click += (sender, e) => TextClipboard.Cut(rTextBox);
-			copiarEdicion.Click += (sender, e) => TextClipboard.Copy(rTextBox);
-			copiarRTF.Click += (sender, e) => TextClipboard.Copy(rTextBox);
-			pegarEdicion.Click += (sender, e) => TextClipboard.Paste(rTextBox);
-			pegarRTF.Click += (sender, e) => TextClipboard.Paste(rTextBox);
-			
-			// Zoom system
-			zoom50.Click += (sender, e) => Utils.ToogleZoomFactor(0.5F, "50%", rTextBox, zoomTool);
-			zoom100.Click += (sender, e) => Utils.ToogleZoomFactor(1F, "100%", rTextBox, zoomTool);
-			zoom200.Click += (sender, e) => Utils.ToogleZoomFactor(2F, "200%", rTextBox, zoomTool);
-			zoom400.Click += (sender, e) => Utils.ToogleZoomFactor(4F, "400%", rTextBox, zoomTool);
-		}
-		
-		void SalirToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			Application.Exit();
-		}
-		
-		void AbrirToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			if (TextHandle.LoadFile())
-				TextHandle.LoadToRichTextBox();
-		}
-		
-		void GuardarToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			TextHandle.SaveTextToFile();
-		}
-		
-		void NuevoToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			TextHandle.VerifyChanges(true);
-			rTextBox.Clear();
-		}
-		
-		void RTextBoxSelectionChanged(object sender, EventArgs e)
-		{
-			// Obtener la línea.
-			int index = rTextBox.SelectionStart;
-			int line = (rTextBox.GetLineFromCharIndex(index));
-			
-			// Obtener la columna.
-			int firstChar = rTextBox.GetFirstCharIndexFromLine(line);
-			int column = (index - firstChar);
-			
-			tStripLblCount.Text = String.Format("Línea: {0} Columna: {1}", ++line, ++column);
-			
-			// Detectar estilos
-			DetectStyle(rTextBox.SelectionFont);
-		}
-		
-		void BarraDeHerramientasToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			toolStripContainer1.TopToolStripPanelVisible = barraDeHerramientasToolStripMenuItem.Checked ? barraDeHerramientasToolStripMenuItem.Checked = false : barraDeHerramientasToolStripMenuItem.Checked = true;
-		}
-		
-		void BarraDeEstadoToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			if (barraDeEstadoToolStripMenuItem.Checked)
-				barraDeEstadoToolStripMenuItem.Checked = statusBar.Visible = false;
-			else
-				barraDeEstadoToolStripMenuItem.Checked = statusBar.Visible = true;
-		}
-		
-		void AcerdaDeToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			var about = new AboutBox();
-			about.ShowDialog();
-		}
-		
-		void ToolBoldClick(object sender, EventArgs e)
-		{
-			Utils.ToogleFontStyle(FontStyle.Bold, rTextBox, toolBold);
-		}
-		
-		void ToolCursiveClick(object sender, EventArgs e)
-		{
-			Utils.ToogleFontStyle(FontStyle.Italic, rTextBox, toolCursive);
-		}
-		
-		void ToolUnderlineClick(object sender, EventArgs e)
-		{
-			Utils.ToogleFontStyle(FontStyle.Underline, rTextBox, toolUnderline);
-		}
-		
-		void ToolFontsSelectedIndexChanged(object sender, EventArgs e)
-		{
-			FontStyle style;
-			
-			style = rTextBox.SelectionFont != null ? rTextBox.SelectionFont.Style : rTextBox.Font.Style;
-			rTextBox.SelectionFont = new Font(toolFonts.Text, (float)toolFontSize.Value, style);
-		}
-		
-		void ToolTachadoClick(object sender, EventArgs e)
-		{
-			Utils.ToogleFontStyle(FontStyle.Strikeout, rTextBox, toolTachado);
-		}
-		
-		void ToolJusLeftClick(object sender, EventArgs e)
-		{
-			rTextBox.SelectionAlignment = HorizontalAlignment.Left;
-		}
-		
-		void ToolJusCenterClick(object sender, EventArgs e)
-		{
-			rTextBox.SelectionAlignment = HorizontalAlignment.Center;
-		}
-		
-		void ToolJusRightClick(object sender, EventArgs e)
-		{
-			rTextBox.SelectionAlignment = HorizontalAlignment.Right;
-		}
-		
-		void ToolJusFillClick(object sender, EventArgs e)
-		{
-			// TODO: Justify Text
-		}
-		
-		void ToolColorClick(object sender, EventArgs e)
-		{
-			if (colorDialog.ShowDialog() == DialogResult.OK) {
-				rTextBox.SelectionColor = colorDialog.Color;
-			}
-		}
-		
-		void ToolBulletClick(object sender, EventArgs e)
-		{
-			rTextBox.SelectionBullet = !rTextBox.SelectionBullet;
-		}
-		
-		void ToolBackColorClick(object sender, EventArgs e)
-		{
-			if (colorDialog.ShowDialog() == DialogResult.OK) {
-				rTextBox.SelectionBackColor = colorDialog.Color;
-			}
-		}
-		
-		void MainFormFormClosing(object sender, FormClosingEventArgs e)
-		{
-			TextHandle.VerifyChanges(true);
-		}
-		
-		void DetectStyle(Font actualStyle)
-		{
-			if (actualStyle != null) {
-				toolFonts.Text = actualStyle.Name;
-				toolFontSize.Value = (decimal)actualStyle.Size;
-				toolBold.Checked = actualStyle.Bold ? true : false;
-				toolCursive.Checked = actualStyle.Italic ? true : false;
-				toolUnderline.Checked = actualStyle.Underline ? true : false;
-				toolTachado.Checked = actualStyle.Strikeout ? true : false;
-			}
-		}
-		
-		void RTextBoxTextChanged(object sender, EventArgs e)
-		{
-			TextHandle.VerifyChanges();
-		}
-		void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			TextHandle.SaveTextToFile(true);
-		}
-	}
+            toolFontSize.AddToToolStrip(toolStrip1, 2);
+
+            foreach (ToolStripItem item in toolStrip1.Items)
+            {
+                item.Enabled = false;
+            }
+        }
+
+        void SalirToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        void AbrirToolStripMenuItemClick(object sender, EventArgs e)
+        {
+
+        }
+
+        void GuardarToolStripMenuItemClick(object sender, EventArgs e)
+        {
+
+        }
+
+        void NuevoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            CreateNewFile();
+        }
+
+        void BarraDeHerramientasToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            toolStrip1.Visible = barraDeHerramientasToolStripMenuItem.Checked ? barraDeHerramientasToolStripMenuItem.Checked = false : barraDeHerramientasToolStripMenuItem.Checked = true;
+        }
+
+        void BarraDeEstadoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            if (barraDeEstadoToolStripMenuItem.Checked)
+                barraDeEstadoToolStripMenuItem.Checked = statusBar.Visible = false;
+            else
+                barraDeEstadoToolStripMenuItem.Checked = statusBar.Visible = true;
+        }
+
+        void AcerdaDeToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            var about = new AboutBox();
+            about.ShowDialog();
+        }
+
+        void ToolBoldClick(object sender, EventArgs e)
+        {
+            Utils.ToggleFont(FontStyle.Bold, actualEditor, toolBold);
+        }
+
+        void ToolCursiveClick(object sender, EventArgs e)
+        {
+            Utils.ToggleFont(FontStyle.Italic, actualEditor, toolCursive);
+        }
+
+        void ToolUnderlineClick(object sender, EventArgs e)
+        {
+            Utils.ToggleFont(FontStyle.Underline, actualEditor, toolUnderline);
+        }
+
+        void ToolFontsSelectedIndexChanged(object sender, EventArgs e)
+        {
+            Utils.ToggleFont(toolFonts.Text, (float)toolFontSize.Value, actualEditor);
+        }
+
+        void ToolTachadoClick(object sender, EventArgs e)
+        {
+            Utils.ToggleFont(FontStyle.Strikeout, actualEditor, toolTachado);
+        }
+
+        void ToolJusLeftClick(object sender, EventArgs e)
+        {
+            RTFTools.ToggleAligment(HorizontalAlignment.Left, tabs.SelectedTab);
+        }
+
+        void ToolJusCenterClick(object sender, EventArgs e)
+        {
+            RTFTools.ToggleAligment(HorizontalAlignment.Center, tabs.SelectedTab);
+        }
+
+        void ToolJusRightClick(object sender, EventArgs e)
+        {
+            RTFTools.ToggleAligment(HorizontalAlignment.Right, tabs.SelectedTab);
+        }
+
+        void ToolColorClick(object sender, EventArgs e)
+        {
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                RTFTools.ToggleFontColor(colorDialog.Color, tabs.SelectedTab);
+            }
+        }
+
+        void ToolBulletClick(object sender, EventArgs e)
+        {
+            RTFTools.ToogleBullet(tabs.SelectedTab);
+        }
+
+        void ToolBackColorClick(object sender, EventArgs e)
+        {
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                RTFTools.ToggleBackColor(colorDialog.Color, tabs.SelectedTab);
+            }
+        }
+
+        void MainFormFormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+        void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (actualEditor is RTFTextBox) ((RTFTextBox)actualEditor).TextChanged -= DetectLines;
+            if (actualEditor is CodeTextBox) ((CodeTextBox)actualEditor).TextChanged -= DetectLines;
+
+            actualEditor = (IText)tabs.SelectedTab.Controls[0];
+
+            if (actualEditor is RTFTextBox)
+            {
+                ((RTFTextBox)actualEditor).TextChanged += DetectLines;
+
+                toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = true;
+                toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = true;
+                zoomTool.Visible = true;
+            }
+
+            if (actualEditor is CodeTextBox)
+            {
+                ((CodeTextBox)actualEditor).TextChanged += DetectLines;
+
+                toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = false;
+                toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = false;
+                zoomTool.Visible = false;
+            }
+        }
+
+        private void CreateNewFile()
+        {
+            DialogNew dialog = new DialogNew();
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+                PrepareRTFTextBox();
+            else
+                PrepareCodeTextBox();
+        }
+
+        private void InitializeEvents(IText initial)
+        {
+            actualEditor = initial;
+
+            foreach (FontFamily font in FontFamily.Families)
+            {
+                toolFonts.Items.Add(font.Name);
+            }
+
+            // Mostrar datos iniciales
+            toolFontSize.Value = (decimal)actualEditor.FontText.Size;
+            toolFonts.Text = actualEditor.FontText.Name;
+
+            toolFontSize.ValueChanged += ToolFontsSelectedIndexChanged;
+            toolFonts.SelectedIndexChanged += ToolFontsSelectedIndexChanged;
+
+            toolFonts.Enabled = toolFontSize.Enabled = true;
+            toolBold.Enabled = toolCursive.Enabled = toolUnderline.Enabled = toolTachado.Enabled = true;
+
+            // Clipboard system
+            cortarEdicion.Click += actualEditor.Cut;
+            cortarRTF.Click += actualEditor.Cut;
+            copiarEdicion.Click += actualEditor.Copy;
+            copiarRTF.Click += actualEditor.Copy;
+            pegarEdicion.Click += actualEditor.Paste;
+            pegarRTF.Click += actualEditor.Paste;
+
+            // Zoom system
+            zoom50.Click += (sender, e) => RTFTools.ToggleZoomFactor(0.5F, tabs.SelectedTab, zoomTool);
+            zoom100.Click += (sender, e) => RTFTools.ToggleZoomFactor(1F, tabs.SelectedTab, zoomTool);
+            zoom200.Click += (sender, e) => RTFTools.ToggleZoomFactor(2F, tabs.SelectedTab, zoomTool);
+            zoom400.Click += (sender, e) => RTFTools.ToggleZoomFactor(4F, tabs.SelectedTab, zoomTool);
+        }
+
+        private void PrepareCodeTextBox()
+        {
+            TabPage tabPage = new TabPage();
+
+            var editor = new CodeTextBox
+            {
+                Dock = DockStyle.Fill,
+                NameFile = $"new {tabs.TabPages.Count}",
+                OriginalContent = ""
+            };
+
+            var propertyGrid = new PropertyGrid
+            {
+                SelectedObject = editor,
+                Dock = DockStyle.Right,
+                Width = 200
+            };
+
+            tabPage.Controls.Add(editor);
+            tabPage.Controls.Add(propertyGrid);
+            tabPage.Text = editor.NameFile;
+
+            tabs.TabPages.Add(tabPage);
+            tabs.SelectedTab = tabPage;
+
+            if (actualEditor == null)
+                InitializeEvents(editor);
+            else
+                actualEditor = editor;
+        }
+
+        private void PrepareRTFTextBox()
+        {
+            TabPage tabPage = new TabPage();
+
+            var editor = new RTFTextBox
+            {
+                Dock = DockStyle.Fill,
+                NameFile = $"new {tabs.TabPages.Count}",
+                OriginalContent = ""
+            };
+
+            tabPage.Controls.Add(editor);
+            tabPage.Text = editor.NameFile;
+
+            tabs.TabPages.Add(tabPage);
+            tabs.SelectedTab = tabPage;
+
+            if (actualEditor == null)
+                InitializeEvents(editor);
+            else
+                actualEditor = editor;
+        }
+
+        void DetectLines(object sender, EventArgs e)
+        {
+            tStripLblCount.Text = Utils.GetLines(actualEditor);
+            DetectStyle(actualEditor.FontText);
+        }
+
+        void DetectStyle(Font actualStyle)
+        {
+            if (actualStyle != null)
+            {
+                toolFonts.Text = actualStyle.Name;
+                toolFontSize.Value = (decimal)actualStyle.Size;
+                toolBold.Checked = actualStyle.Bold ? true : false;
+                toolCursive.Checked = actualStyle.Italic ? true : false;
+                toolUnderline.Checked = actualStyle.Underline ? true : false;
+                toolTachado.Checked = actualStyle.Strikeout ? true : false;
+            }
+        }
+    }
 }
