@@ -11,13 +11,14 @@ namespace Writer.Modules
     {
         // Text
         string Content { get; set; }
+        string PlainContent { get; }
         string SelectionText { get; set; }
 
         // File
         string NameFile { get; set; }
         string FileUrl { get; set; }
         string OriginalContent { get; set; }
-        bool hasChanges { get; }
+        bool hasChanges { get; } // Podrías implementar esta propiedad o eliminarla
 
         // MIME Support
         Dictionary<string, string> supportedFormats { get; }
@@ -31,3 +32,4 @@ namespace Writer.Modules
         Font FontText { get; set; }
     }
 }
+

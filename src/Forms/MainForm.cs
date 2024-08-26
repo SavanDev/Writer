@@ -23,11 +23,11 @@
  */
 using ICSharpCode.TextEditor;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Writer.Controls;
-using Writer.Forms;
 using Writer.Modules;
 
 namespace Writer
@@ -65,20 +65,76 @@ namespace Writer
             Application.Exit();
         }
 
-        void AbrirToolStripMenuItemClick(object sender, EventArgs e)
+        private void AbrirToolStripMenuItemClick(object sender, EventArgs e)
         {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Archivos de texto (*.txt)|*.txt|Texto enriquecido (*.rtf)|*.rtf|Todos los archivos (*.*)|*.*";
 
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string fileContent = File.ReadAllText(openFileDialog.FileName);
+                    var tabPage = new TabPage(Path.GetFileName(openFileDialog.FileName));
+
+                    var extension = Path.GetExtension(openFileDialog.FileName);
+
+                    if (extension == ".rtf")
+                    {
+                        var editor = new RTFTextBox // Puedes cambiar a CodeTextBox si es un archivo de código
+                        {
+                            Dock = DockStyle.Fill,
+                            Text = fileContent,
+                            NameFile = Path.GetFileName(openFileDialog.FileName),
+                            FileUrl = openFileDialog.FileName,
+                            OriginalContent = fileContent
+                        };
+                        tabPage.Controls.Add(editor);
+                        InitializeEvents(editor);
+                    }
+                    else
+                    {
+                        var editor = new CodeTextBox
+                        {
+                            Dock = DockStyle.Fill,
+                            Text = fileContent,
+                            NameFile = Path.GetFileName(openFileDialog.FileName),
+                            FileUrl = openFileDialog.FileName,
+                            OriginalContent = fileContent
+                        };
+
+                        /*var propertyGrid = new PropertyGrid
+                        {
+                            SelectedObject = editor,
+                            Dock = DockStyle.Right,
+                            Width = 200
+                        };*/
+
+                        tabPage.Controls.Add(editor);
+                        //tabPage.Controls.Add(propertyGrid);
+                        InitializeEvents(editor);
+                    }
+                    
+                    tabs.TabPages.Add(tabPage);
+                    tabs.SelectedTab = tabPage;
+                }
+            }
         }
 
-        void GuardarToolStripMenuItemClick(object sender, EventArgs e)
-        {
 
+        private void GuardarToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            if (actualEditor == null) return;
+
+            if (string.IsNullOrEmpty(actualEditor.FileUrl))
+            {
+                GuardarComoToolStripMenuItemClick(sender, e); // Invoca Guardar Como si no tiene nombre de archivo
+            }
+            else
+            {
+                GuardarArchivo(actualEditor.FileUrl);
+            }
         }
 
-        void NuevoToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            CreateNewFile();
-        }
 
         void BarraDeHerramientasToolStripMenuItemClick(object sender, EventArgs e)
         {
@@ -160,50 +216,89 @@ namespace Writer
             }
         }
 
-        void MainFormFormClosing(object sender, FormClosingEventArgs e)
+        private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
+            foreach (TabPage tab in tabs.TabPages)
+            {
+                    var editor = tab.Controls[0] as IText;
+                    if (editor != null && editor.hasChanges)
+                    {
+                        Debug.WriteLine(editor.hasChanges);
+                        var result = MessageBox.Show($"El archivo '{tab.Text}' tiene cambios no guardados. ¿Desea guardarlos antes de salir?",
+                            "Cambios no guardados", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
 
+                        if (result == DialogResult.Yes)
+                        {
+                            GuardarArchivo(editor.FileUrl);
+                        }
+                        else if (result == DialogResult.Cancel)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+                    
+                    }
+            }
         }
-        void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
+
+        private void GuardarComoToolStripMenuItemClick(object sender, EventArgs e)
         {
+            if (actualEditor == null) return;
 
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.DefaultExt = "txt";
+                saveFileDialog.AddExtension = true;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    GuardarArchivo(saveFileDialog.FileName);
+                }
+            }
         }
+
 
         private void tabs_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (tabs.TabCount == 0) return; // Verifica si hay pestañas antes de continuar
+
+            // Desvincula eventos anteriores
             if (actualEditor is RTFTextBox) ((RTFTextBox)actualEditor).TextChanged -= DetectLines;
             if (actualEditor is CodeTextBox) ((CodeTextBox)actualEditor).TextChanged -= DetectLines;
 
-            actualEditor = (IText)tabs.SelectedTab.Controls[0];
-
-            if (actualEditor is RTFTextBox)
+            // Verifica si la pestaña seleccionada es válida y tiene controles
+            if (tabs.SelectedTab != null && tabs.SelectedTab.Controls.Count > 0)
             {
-                ((RTFTextBox)actualEditor).TextChanged += DetectLines;
+                actualEditor = (IText)tabs.SelectedTab.Controls[0];
 
-                toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = true;
-                toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = true;
-                zoomTool.Visible = true;
+                if (actualEditor is RTFTextBox)
+                {
+                    ((RTFTextBox)actualEditor).TextChanged += DetectLines;
+
+                    toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = true;
+                    toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = true;
+                    zoomTool.Visible = true;
+                }
+                else if (actualEditor is CodeTextBox)
+                {
+                    ((CodeTextBox)actualEditor).TextChanged += DetectLines;
+
+                    toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = false;
+                    toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = false;
+                    zoomTool.Visible = false;
+                }
             }
-
-            if (actualEditor is CodeTextBox)
+            else
             {
-                ((CodeTextBox)actualEditor).TextChanged += DetectLines;
-
+                actualEditor = null;
+                // Deshabilitar herramientas si no hay pestaña seleccionada
                 toolJusLeft.Enabled = toolJusCenter.Enabled = toolJusRight.Enabled = false;
                 toolBullet.Enabled = toolColor.Enabled = toolBackColor.Enabled = false;
                 zoomTool.Visible = false;
             }
         }
 
-        private void CreateNewFile()
-        {
-            DialogNew dialog = new DialogNew();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-                PrepareRTFTextBox();
-            else
-                PrepareCodeTextBox();
-        }
 
         private void InitializeEvents(IText initial)
         {
@@ -250,15 +345,15 @@ namespace Writer
                 OriginalContent = ""
             };
 
-            var propertyGrid = new PropertyGrid
+            /*var propertyGrid = new PropertyGrid
             {
                 SelectedObject = editor,
                 Dock = DockStyle.Right,
                 Width = 200
-            };
+            };*/
 
             tabPage.Controls.Add(editor);
-            tabPage.Controls.Add(propertyGrid);
+            //tabPage.Controls.Add(propertyGrid);
             tabPage.Text = editor.NameFile;
 
             tabs.TabPages.Add(tabPage);
@@ -311,5 +406,67 @@ namespace Writer
                 toolTachado.Checked = actualStyle.Strikeout ? true : false;
             }
         }
+
+        private void textoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PrepareRTFTextBox();
+        }
+
+        private void códigoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PrepareCodeTextBox();
+        }
+
+        private void tabs_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //This code will render a "x" mark at the end of the Tab caption.
+            e.Graphics.DrawString("X", e.Font, Brushes.Black, e.Bounds.Right - 15, e.Bounds.Top + 4);
+            e.Graphics.DrawString(this.tabs.TabPages[e.Index].Text, e.Font, Brushes.Black, e.Bounds.Left + 12, e.Bounds.Top + 4);
+            e.DrawFocusRectangle();
+        }
+
+        private void tabs_MouseDown(object sender, MouseEventArgs e)
+        {
+            Rectangle r = tabs.GetTabRect(this.tabs.SelectedIndex);
+            Rectangle closeButton = new Rectangle(r.Right - 15, r.Top + 4, 9, 7);
+            if (closeButton.Contains(e.Location))
+            {
+                if (actualEditor.hasChanges)
+                {
+                    Debug.WriteLine(actualEditor.hasChanges);
+                    var result = MessageBox.Show($"El archivo '{actualEditor.NameFile}' tiene cambios no guardados. ¿Desea guardarlos antes de salir?",
+                        "Cambios no guardados", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        GuardarArchivo(actualEditor.FileUrl);
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+                this.tabs.TabPages.Remove(this.tabs.SelectedTab);
+            }
+        }
+
+        private void GuardarArchivo(string fileName)
+        {
+            if (actualEditor == null) return;
+
+            try
+            {
+                File.WriteAllText(fileName, fileName.Contains(".txt") ? actualEditor.PlainContent : actualEditor.Content);
+                actualEditor.NameFile = Path.GetFileName(fileName); // Actualiza el nombre del archivo
+                actualEditor.FileUrl = fileName;
+                actualEditor.OriginalContent = actualEditor.Content; // Actualiza el contenido original después de guardar
+                MessageBox.Show("Archivo guardado exitosamente.", "Guardar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar el archivo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }

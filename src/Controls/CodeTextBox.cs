@@ -18,6 +18,12 @@ namespace Writer.Controls
             get => this.Text;
             set => this.Text = value;
         }
+
+        public string PlainContent
+        {
+            get => this.Text;
+        }
+
         public string SelectionText
         {
             get => this.ActiveTextAreaControl.SelectionManager.SelectedText;

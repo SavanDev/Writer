@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -16,6 +17,12 @@ namespace Writer.Controls
             get => this.Rtf;
             set => this.Rtf = value;
         }
+
+        public string PlainContent
+        {
+            get => this.Text;
+        }
+
         public string SelectionText
         {
             get => this.SelectedRtf;
@@ -27,7 +34,7 @@ namespace Writer.Controls
         public string OriginalContent { get; set; }
         public bool hasChanges
         {
-            get => OriginalContent != Content;
+            get => !OriginalContent.Equals((Path.GetExtension(FileUrl) == ".txt" ? PlainContent : Content));
         }
 
         public Dictionary<string, string> supportedFormats

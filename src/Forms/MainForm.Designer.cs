@@ -56,6 +56,8 @@ namespace Writer
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nuevoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.códigoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guardarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guardarComoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,12 +137,28 @@ namespace Writer
             // 
             // nuevoToolStripMenuItem
             // 
+            this.nuevoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.textoToolStripMenuItem,
+            this.códigoToolStripMenuItem});
             this.nuevoToolStripMenuItem.Image = global::Writer.media.document_empty;
             this.nuevoToolStripMenuItem.Name = "nuevoToolStripMenuItem";
             this.nuevoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.nuevoToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.nuevoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.nuevoToolStripMenuItem.Text = "Nuevo";
-            this.nuevoToolStripMenuItem.Click += new System.EventHandler(this.NuevoToolStripMenuItemClick);
+            // 
+            // textoToolStripMenuItem
+            // 
+            this.textoToolStripMenuItem.Name = "textoToolStripMenuItem";
+            this.textoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textoToolStripMenuItem.Text = "RTF";
+            this.textoToolStripMenuItem.Click += new System.EventHandler(this.textoToolStripMenuItem_Click);
+            // 
+            // códigoToolStripMenuItem
+            // 
+            this.códigoToolStripMenuItem.Name = "códigoToolStripMenuItem";
+            this.códigoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.códigoToolStripMenuItem.Text = "Texto plano";
+            this.códigoToolStripMenuItem.Click += new System.EventHandler(this.códigoToolStripMenuItem_Click);
             // 
             // abrirToolStripMenuItem
             // 
@@ -217,7 +235,7 @@ namespace Writer
             this.barraDeHerramientasToolStripMenuItem,
             this.barraDeEstadoToolStripMenuItem});
             this.verToolStripMenuItem.Name = "verToolStripMenuItem";
-            this.verToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.verToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.verToolStripMenuItem.Text = "Ver";
             // 
             // barraDeHerramientasToolStripMenuItem
@@ -510,12 +528,16 @@ namespace Writer
             // tabs
             // 
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabs.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
             this.tabs.Size = new System.Drawing.Size(624, 364);
+            this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabs.TabIndex = 0;
+            this.tabs.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabs_DrawItem);
             this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
+            this.tabs.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabs_MouseDown);
             // 
             // MainForm
             // 
@@ -592,5 +614,7 @@ namespace Writer
         private System.Windows.Forms.ToolStripButton toolBackColor;
         private System.Windows.Forms.Panel panelText;
         private System.Windows.Forms.TabControl tabs;
+        private System.Windows.Forms.ToolStripMenuItem textoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem códigoToolStripMenuItem;
     }
 }
